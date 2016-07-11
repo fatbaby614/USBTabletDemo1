@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- 0x256C / 0x006E: Huion Tablet  -->
+    <!--<usb-device vendor-id="9580" product-id="110" class="220" subclass="160" protocol="176" />-->
+    <usb-device vendor-id="9580" product-id="110" />
+
+</resources>
