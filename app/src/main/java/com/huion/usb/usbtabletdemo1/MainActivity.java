@@ -32,16 +32,17 @@ public class MainActivity extends AppCompatActivity {
     private PendingIntent pendingIntent;
     private ReadUSBThread m_USBReadThread;
     private LinearLayout m_TabletCanvas;
-    public TabletView m_TabletView;
+    public DrawView m_DrawView;
     Button m_btnConnect;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+//        setContentView(new DrawView(this));
 
         m_TabletCanvas = (LinearLayout)findViewById(R.id.TabletCanvas);
-        m_TabletView = new TabletView(this);
-        m_TabletCanvas.addView(m_TabletView);
+        m_DrawView = new DrawView(this);
+        m_TabletCanvas.addView(m_DrawView);
 
         m_btnConnect = (Button) findViewById(R.id.buttonConnect);
         m_btnConnect.setOnClickListener(new OnClickListener() {
@@ -184,11 +185,18 @@ public class MainActivity extends AppCompatActivity {
                     if (ret>0) {
                         String strUsbData = String.format("%x %x %x %x %x %x %x %x",
                                 usbbuf[0], usbbuf[1], usbbuf[2], usbbuf[3], usbbuf[4], usbbuf[5], usbbuf[6], usbbuf[7]);
-                        Log.i(TAG, String.format("get data:%d", ret) + strUsbData);
-                        m_TabletView.clear();
+//                        Log.i(TAG, String.format("get data:%d", ret) + strUsbData);
+//                        Point pt = new Point();
+                        int penButton = (usbbuf[1] & 0x0f);
+                        int pos_x = ((usbbuf[3] & 0xFF) << 8) | (usbbuf[2] & 0xFF);
+                        int pos_y = ((usbbuf[5] & 0xFF) << 8) | (usbbuf[4] & 0xFF);
+                        int pressure = ((usbbuf[7] & 0xFF) << 8) | (usbbuf[6] & 0xFF);
+                        Log.i(TAG, String.format("X:%d Y:%d Pressure:%d PenButton:%d", pos_x,pos_y,pressure,penButton));
+
                     }
                 }
                 Log.i(TAG, String.format("USB Read Thread Exit"));
+                connection.close();
             }
             catch (Exception e) {
                 // TODO Auto-generated catch block
